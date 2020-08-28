@@ -35,9 +35,18 @@ colnames(X_test) <- cnames
 
 # Cambiar el nombre de las columnas para X_train
 colnames(X_train) <- cnames
+
+dim(X_train)
+dim(X_test) 
 ```
 
 ## 1.Merges the training and the test sets to create one data set.
+```{r}
+Xtestandtrain <- rbind(X_test, X_train)
+
+View(Xtestandtrain)
+dim(Xtestandtrain) # [1] 10299   561
+```
 
 # Crear un subset de los datos pedidos
 
