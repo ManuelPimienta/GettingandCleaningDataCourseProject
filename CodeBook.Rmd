@@ -14,10 +14,30 @@ Crear un marco de datos a partir de los conjuntos training and the test
 ```{r}
 # Carga del primer conjunto X_test
 X_test <- read.table("F:/Descargas/UCI HAR Dataset/test/X_test.txt", quote="\"", comment.char="")
-View(X_test)
 
 # Carga del primer conjunto X_train
 X_train <- read.table("F:/Descargas/UCI HAR Dataset/train/X_train.txt", quote="\"", comment.char="")
-View(X_train)
 ```
+
+# Carga de nombres de columnas desde archivo "features"
+```{r}
+features <- read.table("F:/Descargas/UCI HAR Dataset/features.txt", quote="\"", comment.char="")
+```
+
+# Crear vector con los nombres de las columnas y cambiar el nombre de las columnas de los archivos X_train y X_test
+```{r}
+# Crear vector con los nombres de las columnas con el archivo features
+cnames <- features$V2
+
+# Cambiar el nombre de las columnas para X_test
+colnames(X_test) <- cnames
+
+
+# Cambiar el nombre de las columnas para X_train
+colnames(X_train) <- cnames
+```
+
+## 1.Merges the training and the test sets to create one data set.
+
+# Crear un subset de los datos pedidos
 
