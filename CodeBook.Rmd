@@ -9,6 +9,11 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+# Cargar librerias
+```{r}
+library(dplyr)
+```
+
 Crear un marco de datos a partir de los conjuntos training and the test
 
 ```{r}
@@ -22,6 +27,8 @@ X_train <- read.table("F:/Descargas/UCI HAR Dataset/train/X_train.txt", quote="\
 # Carga de nombres de columnas desde archivo "features"
 ```{r}
 features <- read.table("F:/Descargas/UCI HAR Dataset/features.txt", quote="\"", comment.char="")
+
+View(features)
 ```
 
 # Crear vector con los nombres de las columnas y cambiar el nombre de las columnas de los archivos X_train y X_test
@@ -48,5 +55,11 @@ View(Xtestandtrain)
 dim(Xtestandtrain) # [1] 10299   561
 ```
 
-# Crear un subset de los datos pedidos
+# 2. Extracts only the measurements on the mean and standard deviation for each measurement
+mean(): Mean value
+std(): Standard deviation
+
+```{r}
+Xtestandtrain %>% select(contains("mean") | contains("std"))
+```
 
