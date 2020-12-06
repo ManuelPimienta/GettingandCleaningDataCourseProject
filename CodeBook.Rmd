@@ -18,15 +18,15 @@ Crear un marco de datos a partir de los conjuntos training and the test
 
 ```{r}
 # Carga del primer conjunto X_test
-X_test <- read.table("F:/Descargas/UCI HAR Dataset/test/X_test.txt", quote="\"", comment.char="")
+X_test <- read.table("F:/ARCHIVO/OTROS/CURSO R/UCI HAR Dataset/test/X_test.txt", quote="\"", comment.char="")
 
 # Carga del primer conjunto X_train
-X_train <- read.table("F:/Descargas/UCI HAR Dataset/train/X_train.txt", quote="\"", comment.char="")
+X_train <- read.table("F:/ARCHIVO/OTROS/CURSO R/UCI HAR Dataset/train/X_train.txt", quote="\"", comment.char="")
 ```
 
 # Carga de nombres de columnas desde archivo "features"
 ```{r}
-features <- read.table("F:/Descargas/UCI HAR Dataset/features.txt", quote="\"", comment.char="")
+features <- read.table("F:/ARCHIVO/OTROS/CURSO R/UCI HAR Dataset/features.txt", quote="\"", comment.char="")
 
 View(features)
 ```
@@ -60,6 +60,17 @@ mean(): Mean value
 std(): Standard deviation
 
 ```{r}
-Xtestandtrain %>% select(contains("mean") | contains("std"))
+meanstd <- Xtestandtrain %>% select(contains("mean") | contains("std"))
+View(meanstd)
+```
+
+# Uses descriptive activity names to name the activities in the data set
+Mediante una expreción regular se eliminan los simbolos "-, t, X, Z ()". 
+Tambien se reemplazan las abreviaturas como Acc por aceleración
+
+```{r}
+# Extraer nombres del subset
+nombres <- colnames(meanstd)
+nombres
 ```
 
