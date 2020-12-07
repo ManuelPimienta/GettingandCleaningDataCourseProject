@@ -20,6 +20,15 @@ library(dplyr)
 directorio_actual <- getwd()
 
 ruta_directorio_datos <- paste(directorio_actual, "/UCI HAR Dataset/", sep = "")
+<<<<<<< HEAD
+=======
+
+
+# Se lee el archivo que contiene los nombres de las actividades medidas desde archivo activity_labels.txt
+activitylabels <- read.table(file.path(ruta_directorio_datos, "activity_labels.txt"))
+View(activitylabels)
+
+>>>>>>> fe16c55cb4e32c460d3466552603ee5c7f02557c
 
 # Leer los archivos descargados en formato txt y crea los marcos de datos
 # Carga del primer conjunto test
