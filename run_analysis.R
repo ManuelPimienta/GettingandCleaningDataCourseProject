@@ -75,8 +75,8 @@ names <- tolower(names)
 colnames(meanandstandardmeasure) <- names
 
 # 5. From the data set in step 4, creates a second, independent tidy data set with the average of each variable for each activity and each subject.
-meanandstandardmeasure %>% 
+averagemeasure <- meanandstandardmeasure %>% 
   group_by(subject, activity) %>%
   summarise_all(mean)
 
-tidydata <- write.table(meanandstandardmeasure, "tidydata.txt", sep = ",", row.names = FALSE, col.names = TRUE)
+tidydata <- write.table(averagemeasure, "tidydata.txt", sep = ",", row.names = FALSE, col.names = TRUE)
