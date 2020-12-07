@@ -5,24 +5,54 @@ date: "27/8/2020"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
 # Cargar librerias
 ```{r}
 library(dplyr)
 ```
 
-Crear un marco de datos a partir de los conjuntos training and the test
-
+# Descargar los datos
 ```{r}
-# Carga del primer conjunto X_test
-X_test <- read.table("F:/ARCHIVO/OTROS/CURSO R/UCI HAR Dataset/test/X_test.txt", quote="\"", comment.char="")
-
-# Carga del primer conjunto X_train
-X_train <- read.table("F:/ARCHIVO/OTROS/CURSO R/UCI HAR Dataset/train/X_train.txt", quote="\"", comment.char="")
+download.file(
+  url = "https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip", 
+  destfile = "Dataset.zip"
+  )
+unzip(zipfile = "Dataset.zip", exdir = getwd())
 ```
+
+# Leer los archivos descargados en formato txt y crea los marcos de datos
+```{r}
+# Carga del primer conjunto test
+subject_test <- read.table("F:/ARCHIVO/OTROS/CURSO R/UCI HAR Dataset/test/subject_test.txt", quote="\"", comment.char="")
+
+xtest <- read.table("F:/ARCHIVO/OTROS/CURSO R/UCI HAR Dataset/test/X_test.txt", quote="\"", comment.char="")
+
+ytest <- read.table("F:/ARCHIVO/OTROS/CURSO R/UCI HAR Dataset/test/y_test.txt", quote="\"", comment.char="")
+
+# Carga del primer conjunto train
+subject_train <- read.table("F:/ARCHIVO/OTROS/CURSO R/UCI HAR Dataset/train/subject_train.txt", quote="\"", comment.char="")
+
+xtrain <- read.table("F:/ARCHIVO/OTROS/CURSO R/UCI HAR Dataset/train/X_train.txt", quote="\"", comment.char="")
+
+ytrain <- read.table("F:/ARCHIVO/OTROS/CURSO R/UCI HAR Dataset/train/y_train.txt", quote="\"", comment.char="")
+```
+
+# Union de los marcos de datos
+```{r}
+measureactivity <- rbind(
+  cbind(subject_test, xtest, ytest),
+  cbind(subject_train, xtrain, ytrain)
+)
+View(measureactivity)
+```
+
+# Se lee el archivo que contiene los nombres de las actividades medidas desde archivo activity_labels.txt
+```{r}
+activitylabels <- read.table("F:/ARCHIVO/OTROS/CURSO R/UCI HAR Dataset/activity_labels.txt")
+
+colnames(activitylabels) <- c("activityid", "activitylabel")
+View(activitylabels)
+```
+
 
 # Carga de nombres de columnas desde archivo "features"
 ```{r}
@@ -33,8 +63,10 @@ View(features)
 
 # Crear vector con los nombres de las columnas y cambiar el nombre de las columnas de los archivos X_train y X_test
 ```{r}
+# NO SE UTILIZA
 # Crear vector con los nombres de las columnas con el archivo features
 cnames <- features$V2
+
 
 # Cambiar el nombre de las columnas para X_test
 colnames(X_test) <- cnames
@@ -43,8 +75,27 @@ colnames(X_test) <- cnames
 # Cambiar el nombre de las columnas para X_train
 colnames(X_train) <- cnames
 
+
 dim(X_train)
 dim(X_test) 
+
+```
+
+
+```{r}
+colnames(measureactivity) <- c("subject", features$V2, "activity")
+```
+
+```{r}
+View(measureactivity)
+```
+
+
+```{r}
+
+cnameactivity <- activity$V1
+#View(cnameactivity)
+summary (activity) 
 ```
 
 ## 1.Merges the training and the test sets to create one data set.
@@ -54,23 +105,75 @@ Xtestandtrain <- rbind(X_test, X_train)
 View(Xtestandtrain)
 dim(Xtestandtrain) # [1] 10299   561
 ```
+```{r}
+subsetmerge <- rbind(activity[], X_train)
+View(subsetmerge)
+```
+
 
 # 2. Extracts only the measurements on the mean and standard deviation for each measurement
 mean(): Mean value
 std(): Standard deviation
 
 ```{r}
-meanstd <- Xtestandtrain %>% select(contains("mean") | contains("std"))
-View(meanstd)
+meanandstandardmeasure <- measureactivity %>% select(contains("subject") | contains("mean") | contains("std") | contains("activity"))
+View(meanandstandardmeasure)
 ```
 
-# Uses descriptive activity names to name the activities in the data set
-Mediante una expreción regular se eliminan los simbolos "-, t, X, Z ()". 
+# 3 and 4. Uses descriptive activity names to name the activities in the data set
+Mediante una expreción regular se eliminan los simbolos "-, t, X, Z ()".  
+Appropriately labels the data set with descriptive variable names.
 Tambien se reemplazan las abreviaturas como Acc por aceleración
 
 ```{r}
+colnames(meanandstandardmeasure)
+```
+
+
+```{r}
 # Extraer nombres del subset
-nombres <- colnames(meanstd)
+nombres <- gsub("\\()", "",colnames(meanandstandardmeasure),) 
+nombres2 <- gsub("-", "",nombres,)
+nombres3 <- gsub("Acc", "Acceleration", nombres2)
+
 nombres
+
+#gsub("cheap", "sheep's", "A wolf in cheap clothing")
+#[1] "A wolf in sheep's clothing"
+```
+
+```{r}
+#t = time
+#f = frequency 
+# Mag
+names <- gsub("[-,(,)]", "", colnames(meanandstandardmeasure),)
+names <- gsub("Acc", "Acceleration", names)
+names <- gsub("Gyro", "gyroscope", names)
+names <- gsub("Mag", "magnitude", names)
+names <- gsub("^t", "time", names)
+names <- gsub("^f", "frequency", names)
+names <- tolower(names)
+names
+```
+
+```{r}
+# Cambiar los nombres de las columnas 
+colnames(meanandstandardmeasure) <- names
+View(meanandstandardmeasure)
+```
+
+# 5. From the data set in step 4, creates a second, independent tidy data set with the average of each variable for each activity and each subject.
+```{r}
+meanandstandardmeasure %>% 
+  group_by(subject, activity) %>%
+  summarise_all(mean)
+
+```
+
+# Create the data frame
+
+```{r}
+tidydata <- write.table(meanandstandardmeasure, "tidydata.txt", sep = ",", row.names = FALSE, col.names = TRUE)
+tidydata
 ```
 
