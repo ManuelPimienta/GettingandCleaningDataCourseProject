@@ -9,34 +9,46 @@ output: html_document
 library(dplyr)
 
 # Descargar los datos
-download.file(
-  url = "https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip", 
-  destfile = "Dataset.zip"
-)
-unzip(zipfile = "Dataset.zip", exdir = getwd())
+#download.file(
+#  url = "https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip", 
+#  destfile = "Dataset.zip"
+#)
+#unzip(zipfile = "Dataset.zip", exdir = getwd())
+
+
+# Configurar directorio de trabajo
+directorio_actual <- getwd()
+
+ruta_directorio_datos <- paste(directorio_actual, "/UCI HAR Dataset/", sep = "")
+
+
+# Se lee el archivo que contiene los nombres de las actividades medidas desde archivo activity_labels.txt
+activitylabels <- read.table(file.path(ruta_directorio_datos, "activity_labels.txt"))
+View(activitylabels)
+
 
 # Leer los archivos descargados en formato txt y crea los marcos de datos
 # Carga del primer conjunto test
-subject_test <- read.table("F:/ARCHIVO/OTROS/CURSO R/UCI HAR Dataset/test/subject_test.txt", quote="\"", comment.char="")
+subject_test <- read.table(file.path(ruta_directorio_datos, "/test/subject_test.txt"))
 
-xtest <- read.table("F:/ARCHIVO/OTROS/CURSO R/UCI HAR Dataset/test/X_test.txt", quote="\"", comment.char="")
+xtest <- read.table(file.path(ruta_directorio_datos, "/test/X_test.txt"))
 
-ytest <- read.table("F:/ARCHIVO/OTROS/CURSO R/UCI HAR Dataset/test/y_test.txt", quote="\"", comment.char="")
+ytest <- read.table(file.path(ruta_directorio_datos, "/test/y_test.txt"))
 
 # Carga del primer conjunto train
-subject_train <- read.table("F:/ARCHIVO/OTROS/CURSO R/UCI HAR Dataset/train/subject_train.txt", quote="\"", comment.char="")
+subject_train <- read.table(file.path(ruta_directorio_datos, "/train/subject_train.txt"))
 
-xtrain <- read.table("F:/ARCHIVO/OTROS/CURSO R/UCI HAR Dataset/train/X_train.txt", quote="\"", comment.char="")
+xtrain <- read.table(file.path(ruta_directorio_datos, "/train/X_train.txt"))
 
-ytrain <- read.table("F:/ARCHIVO/OTROS/CURSO R/UCI HAR Dataset/train/y_train.txt", quote="\"", comment.char="")
+ytrain <- read.table(file.path(ruta_directorio_datos, "/train/y_train.txt"))
 
 # Se lee el archivo que contiene los nombres de las actividades medidas desde archivo activity_labels.txt
-activitylabels <- read.table("F:/ARCHIVO/OTROS/CURSO R/UCI HAR Dataset/activity_labels.txt")
+activitylabels <- read.table(file.path(ruta_directorio_datos, "/activity_labels.txt"))
 
 colnames(activitylabels) <- c("activityid", "activitylabel")
 
 # Carga de nombres de columnas desde archivo "features"
-features <- read.table("F:/ARCHIVO/OTROS/CURSO R/UCI HAR Dataset/features.txt", quote="\"", comment.char="")
+features <- read.table(file.path(ruta_directorio_datos, "/features.txt"))
 
 
 # === 1. Merges the training and the test sets to create one data set.
